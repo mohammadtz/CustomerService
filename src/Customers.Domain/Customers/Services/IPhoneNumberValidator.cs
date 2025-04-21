@@ -1,6 +1,8 @@
-﻿namespace Customers.Domain.Customers.Services;
+﻿using Common.DomainBase;
 
-public interface IPhoneNumberValidator
+namespace Customers.Domain.Customers.Services;
+
+public interface IPhoneNumberValidator : IDomainService
 {
     bool Validate(string phoneNumber);
 }
