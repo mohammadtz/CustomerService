@@ -69,6 +69,24 @@ namespace Common.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to فرمت ایمیل وارد شده معتبر نمی باشد.
+        /// </summary>
+        public static string EmailFormatIsNotValidException {
+            get {
+                return ResourceManager.GetString("EmailFormatIsNotValidException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ایمیل وارد شده تکراری می باشد.
+        /// </summary>
+        public static string EmailIsDuplicateException {
+            get {
+                return ResourceManager.GetString("EmailIsDuplicateException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to نام و نام خانوادگی نمیتواند خالی باشد.
         /// </summary>
         public static string FullNameCannotBeEmptyException {

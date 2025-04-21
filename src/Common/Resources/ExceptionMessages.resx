@@ -30,4 +30,10 @@
     <data name="PhoneNumberFormatIsInvalidException" xml:space="preserve">
         <value>فرمت شماره تلفن وارد شده صحیح نمی باشد</value>
     </data>
+    <data name="EmailIsDuplicateException" xml:space="preserve">
+        <value>ایمیل وارد شده تکراری می باشد</value>
+    </data>
+    <data name="EmailFormatIsNotValidException" xml:space="preserve">
+        <value>فرمت ایمیل وارد شده معتبر نمی باشد</value>
+    </data>
 </root>
