@@ -36,4 +36,10 @@
     <data name="EmailFormatIsNotValidException" xml:space="preserve">
         <value>فرمت ایمیل وارد شده معتبر نمی باشد</value>
     </data>
+    <data name="CannotContainNonDigitException" xml:space="preserve">
+        <value>شماره حساب نمیتواند شامل حروف باشد</value>
+    </data>
+    <data name="BankAccountNumberFormatIsNotValid" xml:space="preserve">
+        <value>فرمت شماره حساب وارد شده معتبر نمی باشد</value>
+    </data>
 </root>

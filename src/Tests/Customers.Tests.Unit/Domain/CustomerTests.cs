@@ -1,6 +1,7 @@
 ﻿using Common.Resources;
 using Customers.Domain;
 using Customers.Domain.Exceptions;
+using Customers.Domain.ValueObjects;
 using Customers.Tests.Unit.Domain.Base;
 using Shouldly;
 
@@ -115,5 +116,40 @@ public class CustomerTests : CustomerTestBase
         var customer = () => InstantiateWithInvalidFormatEmailCustomer();
 
         customer.ShouldThrow<EmailFormatIsNotValidException>();
+    }
+
+    [Theory]
+    [InlineData("")]
+    [InlineData(" ")]
+    [InlineData(null)]
+    public void bank_account_number_can_be_null_or_empty(string? bankAccountNumber)
+    {
+        var customer = InstantiateValidCustomer(bankAccountNumber: bankAccountNumber);
+
+        customer.BankAccountNumber?.Value.ShouldBeNull();
+    }
+
+    [Fact]
+    public void bank_account_number_filled_as_expected_values()
+    {
+        var customer = InstantiateValidCustomer(bankAccountNumber: ValidBankAccountNumber);
+
+        customer.BankAccountNumber.ShouldBe(new BankAccountNumber(ValidBankAccountNumber));
+    }
+
+    [Fact]
+    public void bank_account_cannot_contain_non_digit()
+    {
+        var customer = () => InstantiateValidCustomer(bankAccountNumber: "abc");
+
+        customer.ShouldThrow<CannotContainNonDigitException>();
+    }
+
+    [Fact]
+    public void bank_account_cannot_be_have_invalid_format()
+    {
+        var customer = () => InstantiateValidCustomer(bankAccountNumber: "123");
+
+        customer.ShouldThrow<BankAccountNumberFormatIsNotValid>();
     }
 }

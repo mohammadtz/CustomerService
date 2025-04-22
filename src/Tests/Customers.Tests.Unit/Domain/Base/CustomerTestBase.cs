@@ -8,6 +8,7 @@ public abstract class CustomerTestBase
 {
     protected const string Email = "john.doe@test.com";
     protected const string PhoneNumber = "+989129121212";
+    protected const string ValidBankAccountNumber = "79927398713";
 
     protected readonly IPhoneNumberValidator PhoneNumberValidator = Substitute.For<IPhoneNumberValidator>();
     protected readonly IEmailDuplicationChecker EmailDuplicationChecker = Substitute.For<IEmailDuplicationChecker>();
@@ -19,7 +20,8 @@ public abstract class CustomerTestBase
         PhoneNumberValidator.Validate(phoneNumber!).Returns(false);
 
         return Customer.Create(PhoneNumberValidator, EmailDuplicationChecker, EmailFormatChecker, firstName, lastName,
-            dateOfBirth: dateOfBirth ?? new DateOnly(2000, 1, 1), phoneNumber, email);
+            dateOfBirth: dateOfBirth ?? new DateOnly(2000, 1, 1), phoneNumber: phoneNumber, email: email,
+            bankAccountNumber: null);
     }
 
     protected Customer InstantiateWithDuplicateEmailCustomer(string firstName = "John", string lastName = "Doe",
@@ -30,7 +32,8 @@ public abstract class CustomerTestBase
         EmailDuplicationChecker.IsDuplicate(email!, Arg.Any<Guid[]>()).Returns(true);
 
         return Customer.Create(PhoneNumberValidator, EmailDuplicationChecker, EmailFormatChecker, firstName, lastName,
-            dateOfBirth: dateOfBirth ?? new DateOnly(2000, 1, 1), phoneNumber, email);
+            dateOfBirth: dateOfBirth ?? new DateOnly(2000, 1, 1), phoneNumber: phoneNumber, email: email,
+            bankAccountNumber: null);
     }
 
     protected Customer InstantiateWithInvalidFormatEmailCustomer(string firstName = "John", string lastName = "Doe",
@@ -41,17 +44,19 @@ public abstract class CustomerTestBase
         EmailFormatChecker.IsValid(email!).Returns(false);
 
         return Customer.Create(PhoneNumberValidator, EmailDuplicationChecker, EmailFormatChecker, firstName, lastName,
-            dateOfBirth: dateOfBirth ?? new DateOnly(2000, 1, 1), phoneNumber, email);
+            dateOfBirth: dateOfBirth ?? new DateOnly(2000, 1, 1), phoneNumber: phoneNumber, email: email,
+            bankAccountNumber: null);
     }
 
     protected Customer InstantiateValidCustomer(string firstName = "John", string lastName = "Doe",
-        DateOnly? dateOfBirth = null, string? phoneNumber = "+989129121122", string? email = Email)
+        DateOnly? dateOfBirth = null, string? phoneNumber = "+989129121122", string? email = Email,
+        string? bankAccountNumber = ValidBankAccountNumber)
     {
         PhoneNumberValidator.Validate(phoneNumber!).Returns(true);
         EmailDuplicationChecker.IsDuplicate(phoneNumber!).Returns(false);
         EmailFormatChecker.IsValid(email!).Returns(true);
 
         return Customer.Create(PhoneNumberValidator, EmailDuplicationChecker, EmailFormatChecker, firstName, lastName,
-            dateOfBirth: dateOfBirth ?? new DateOnly(2000, 1, 1), phoneNumber, email);
+            dateOfBirth: dateOfBirth ?? new DateOnly(2000, 1, 1), phoneNumber, email, bankAccountNumber);
     }
 }

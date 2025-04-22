@@ -1,6 +1,7 @@
 ﻿using Common.DomainBase;
 using Customers.Domain.Exceptions;
 using Customers.Domain.Services;
+using Customers.Domain.ValueObjects;
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
 
@@ -10,12 +11,12 @@ public class Customer : BaseEntity
 {
     private Customer(IPhoneNumberValidator phoneNumberValidator, IEmailDuplicationChecker emailDuplicationChecker,
         IEmailFormatChecker emailFormatChecker, string firstName, string lastName, DateOnly dateOfBirth,
-        string? phoneNumber, string? email)
+        string? phoneNumber, string? email, string? bankAccountNumber)
     {
-        SetFullName(firstName, lastName);
-        SetDateOfBirth(dateOfBirth);
+        SetFullNameAndDateOfBirth(firstName, lastName, dateOfBirth);
         SetPhoneNumber(phoneNumberValidator, phoneNumber);
         SetEmail(emailDuplicationChecker, emailFormatChecker, email);
+        SetBankAccountNumber(bankAccountNumber);
     }
 
     public string FirstName { get; private set; }
@@ -27,6 +28,12 @@ public class Customer : BaseEntity
     public string? PhoneNumber { get; private set; }
 
     public string? Email { get; private set; }
+    public BankAccountNumber? BankAccountNumber { get; private set; }
+    
+    private void SetBankAccountNumber(string? bankAccountNumber)
+    {
+        BankAccountNumber = new BankAccountNumber(bankAccountNumber);
+    }
 
     private void SetEmail(IEmailDuplicationChecker emailDuplicationChecker, IEmailFormatChecker emailFormatChecker,
         string? email)
@@ -52,30 +59,25 @@ public class Customer : BaseEntity
         PhoneNumber = phoneNumber;
     }
 
-    private void SetDateOfBirth(DateOnly dateOfBirth)
-    {
-        if (dateOfBirth == DateOnly.MinValue) throw new DateOfBirthDateIsRequiredException();
-
-        DateOfBirth = dateOfBirth;
-    }
-
-    private void SetFullName(string firstName, string lastName)
+    private void SetFullNameAndDateOfBirth(string firstName, string lastName, DateOnly dateOfBirth)
     {
         if (string.IsNullOrWhiteSpace(firstName) || string.IsNullOrWhiteSpace(lastName))
             throw new FullNameCannotBeEmptyException();
+        
+        if (dateOfBirth == DateOnly.MinValue) throw new DateOfBirthDateIsRequiredException();
 
         FirstName = firstName;
         LastName = lastName;
+        DateOfBirth = dateOfBirth;
     }
 
     public static Customer Create(IPhoneNumberValidator phoneNumberValidator,
         IEmailDuplicationChecker emailDuplicationChecker, IEmailFormatChecker emailFormatChecker, string firstName,
         string lastName,
-        DateOnly dateOfBirth, string? phoneNumber, string? email)
+        DateOnly dateOfBirth, string? phoneNumber, string? email, string? bankAccountNumber)
     {
         var customer = new Customer(phoneNumberValidator, emailDuplicationChecker, emailFormatChecker, firstName,
-            lastName, dateOfBirth,
-            phoneNumber, email);
+            lastName, dateOfBirth, phoneNumber, email, bankAccountNumber);
 
         return customer;
     }

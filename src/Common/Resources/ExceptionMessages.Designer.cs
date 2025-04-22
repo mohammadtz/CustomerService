@@ -60,6 +60,24 @@ namespace Common.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to فرمت شماره حساب وارد شده معتبر نمی باشد.
+        /// </summary>
+        public static string BankAccountNumberFormatIsNotValid {
+            get {
+                return ResourceManager.GetString("BankAccountNumberFormatIsNotValid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to شماره حساب نمیتواند شامل حروف باشد.
+        /// </summary>
+        public static string CannotContainNonDigitException {
+            get {
+                return ResourceManager.GetString("CannotContainNonDigitException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to تاریخ تولد اجباری می باشد.
         /// </summary>
         public static string DateOfBirthDateIsRequiredException {
