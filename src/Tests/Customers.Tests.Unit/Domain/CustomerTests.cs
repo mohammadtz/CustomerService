@@ -27,6 +27,8 @@ public class CustomerTests
     [InlineData("", "")]
     [InlineData(" ", " ")]
     [InlineData(null, null)]
+    [InlineData(null, "test")]
+    [InlineData("test", null)]
     public void full_name_cannot_be_null_or_white_space(string? firstname, string? lastname)
     {
         var customer = () =>
@@ -90,10 +92,13 @@ public class CustomerTests
         customer.PhoneNumber.ShouldBeNull();
     }
 
-    [Fact]
-    public void email_can_be_set_null()
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData(" ")]
+    public void email_can_be_set_null_or_empty(string? email)
     {
-        var customer = new CustomerTestBuilder().WithEmail(null).Build();
+        var customer = new CustomerTestBuilder().WithEmail(email).Build();
 
         customer.Email.ShouldBeNull();
     }
