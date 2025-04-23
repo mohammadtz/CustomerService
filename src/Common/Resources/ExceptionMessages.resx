@@ -42,4 +42,7 @@
     <data name="BankAccountNumberFormatIsNotValid" xml:space="preserve">
         <value>فرمت شماره حساب وارد شده معتبر نمی باشد</value>
     </data>
+    <data name="ThisCustomerAlreadyExistException" xml:space="preserve">
+        <value>این مشتری قبلا ثبت شده است</value>
+    </data>
 </root>

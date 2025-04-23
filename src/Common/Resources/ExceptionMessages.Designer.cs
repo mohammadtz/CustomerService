@@ -130,5 +130,14 @@ namespace Common.Resources {
                 return ResourceManager.GetString("PhoneNumberFormatIsInvalidException", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to این مشتری قبلا ثبت شده است.
+        /// </summary>
+        public static string ThisCustomerAlreadyExistException {
+            get {
+                return ResourceManager.GetString("ThisCustomerAlreadyExistException", resourceCulture);
+            }
+        }
     }
 }

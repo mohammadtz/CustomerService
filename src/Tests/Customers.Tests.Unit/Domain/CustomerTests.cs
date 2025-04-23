@@ -1,4 +1,5 @@
-﻿using Common.Resources;
+﻿using System.Runtime.InteropServices.JavaScript;
+using Common.Resources;
 using Customers.Domain;
 using Customers.Domain.Exceptions;
 using Customers.Domain.ValueObjects;
@@ -7,12 +8,17 @@ using Shouldly;
 
 namespace Customers.Tests.Unit.Domain;
 
-public class CustomerTests : CustomerTestBase
+public class CustomerTests
 {
+    private readonly DateOnly dateOfBirth = new(2010, 1, 1);
+    private const string FirstName = "Dean";
+    private const string LastName = "Winchester";
+    private const string BankAccountNumber = "79927398713";
+
     [Fact]
     public void customer_created_when_customer_create_method_invoke()
     {
-        var customer = InstantiateValidCustomer();
+        var customer = new CustomerTestBuilder().Build();
 
         customer.ShouldBeOfType<Customer>();
     }
@@ -23,47 +29,43 @@ public class CustomerTests : CustomerTestBase
     [InlineData(null, null)]
     public void full_name_cannot_be_null_or_white_space(string? firstname, string? lastname)
     {
-        var customer = () => InstantiateValidCustomer(firstname!, lastname!);
+        var customer = () =>
+            new CustomerTestBuilder().WithBasicInfo(firstname!, lastname!, dateOfBirth).Build();
 
         customer.ShouldThrow<FullNameCannotBeEmptyException>().Message
             .ShouldBe(ExceptionMessages.FullNameCannotBeEmptyException);
     }
 
     [Fact]
-    public void full_name_filled_as_expected_values()
+    public void basic_info_filled_as_expected_values()
     {
-        const string firstName = "Dean";
-        const string lastName = "Winchester";
+        var customer = new CustomerTestBuilder().WithBasicInfo(FirstName, LastName, dateOfBirth).Build();
 
-        var customer = InstantiateValidCustomer(firstName, lastName);
-
-        customer.FirstName.ShouldBe(firstName);
-        customer.LastName.ShouldBe(lastName);
+        customer.BasicInfo.FirstName.ShouldBe(FirstName);
+        customer.BasicInfo.LastName.ShouldBe(LastName);
+        customer.BasicInfo.DateOfBirth.ShouldBe(dateOfBirth);
     }
 
     [Fact]
     public void date_of_birth_date_cannot_be_default_value()
     {
-        var customer = () => InstantiateValidCustomer(dateOfBirth: DateOnly.MinValue);
+        var customer = () => new CustomerTestBuilder().WithBasicInfo(FirstName, LastName, default).Build();
 
         customer.ShouldThrow<DateOfBirthDateIsRequiredException>();
     }
 
     [Fact]
-    public void date_of_birth_date_filled_as_expected_value()
+    public void customer_basic_info_cannot_be_duplicated()
     {
-        var dateOfBirth = new DateOnly(2010, 1, 1);
+        var customer = () => new CustomerTestBuilder().WithDuplicateBasicInfo().Build();
 
-        var customer = InstantiateValidCustomer(dateOfBirth: dateOfBirth);
-
-        customer.DateOfBirth.ShouldBe(dateOfBirth);
+        customer.ShouldThrow<ThisCustomerAlreadyExistException>();
     }
-
+    
     [Fact]
     public void phone_number_format_cannot_be_invalid()
     {
-        var customer = () =>
-            InstantiateWithInvalidPhoneNumberCustomer(phoneNumber: PhoneNumber);
+        var customer = () => new CustomerTestBuilder().WithInvalidPhoneNumber().Build();
 
         customer.ShouldThrow<PhoneNumberFormatIsInvalidException>();
     }
@@ -71,15 +73,19 @@ public class CustomerTests : CustomerTestBase
     [Fact]
     public void phone_number_filled_as_expected_value()
     {
-        var customer = InstantiateValidCustomer(phoneNumber: PhoneNumber);
+        const string phoneNumber = "09121112233";
+        var customer = new CustomerTestBuilder().WithPhoneNumber(phoneNumber).Build();
 
-        customer.PhoneNumber.ShouldBe(PhoneNumber);
+        customer.PhoneNumber.ShouldBe(phoneNumber);
     }
 
-    [Fact]
-    public void phone_number_can_be_set_null()
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData(" ")]
+    public void phone_number_can_be_set_null(string? phoneNumber)
     {
-        var customer = InstantiateValidCustomer(phoneNumber: null);
+        var customer = new CustomerTestBuilder().WithPhoneNumber(phoneNumber).Build();
 
         customer.PhoneNumber.ShouldBeNull();
     }
@@ -87,7 +93,7 @@ public class CustomerTests : CustomerTestBase
     [Fact]
     public void email_can_be_set_null()
     {
-        var customer = InstantiateValidCustomer(email: null);
+        var customer = new CustomerTestBuilder().WithEmail(null).Build();
 
         customer.Email.ShouldBeNull();
     }
@@ -97,7 +103,7 @@ public class CustomerTests : CustomerTestBase
     {
         const string email = "dean@winchester.com";
 
-        var customer = InstantiateValidCustomer(email: email);
+        var customer = new CustomerTestBuilder().WithEmail(email).Build();
 
         customer.Email.ShouldBe(email);
     }
@@ -105,7 +111,7 @@ public class CustomerTests : CustomerTestBase
     [Fact]
     public void email_cannot_be_duplicated()
     {
-        var customer = () => InstantiateWithDuplicateEmailCustomer();
+        var customer = () => new CustomerTestBuilder().WithDuplicateEmail().Build();
 
         customer.ShouldThrow<EmailIsDuplicateException>();
     }
@@ -113,7 +119,7 @@ public class CustomerTests : CustomerTestBase
     [Fact]
     public void email_format_cannot_be_invalid()
     {
-        var customer = () => InstantiateWithInvalidFormatEmailCustomer();
+        var customer = () => new CustomerTestBuilder().WithInvalidEmailFormat().Build();
 
         customer.ShouldThrow<EmailFormatIsNotValidException>();
     }
@@ -124,7 +130,7 @@ public class CustomerTests : CustomerTestBase
     [InlineData(null)]
     public void bank_account_number_can_be_null_or_empty(string? bankAccountNumber)
     {
-        var customer = InstantiateValidCustomer(bankAccountNumber: bankAccountNumber);
+        var customer = new CustomerTestBuilder().WithBankAccount(bankAccountNumber).Build();
 
         customer.BankAccountNumber?.Value.ShouldBeNull();
     }
@@ -132,15 +138,15 @@ public class CustomerTests : CustomerTestBase
     [Fact]
     public void bank_account_number_filled_as_expected_values()
     {
-        var customer = InstantiateValidCustomer(bankAccountNumber: ValidBankAccountNumber);
+        var customer = new CustomerTestBuilder().WithBankAccount(BankAccountNumber).Build();
 
-        customer.BankAccountNumber.ShouldBe(new BankAccountNumber(ValidBankAccountNumber));
+        customer.BankAccountNumber.ShouldBe(new BankAccountNumber(BankAccountNumber));
     }
 
     [Fact]
     public void bank_account_cannot_contain_non_digit()
     {
-        var customer = () => InstantiateValidCustomer(bankAccountNumber: "abc");
+        var customer = () => new CustomerTestBuilder().WithBankAccount("abc").Build();
 
         customer.ShouldThrow<CannotContainNonDigitException>();
     }
@@ -148,7 +154,7 @@ public class CustomerTests : CustomerTestBase
     [Fact]
     public void bank_account_cannot_be_have_invalid_format()
     {
-        var customer = () => InstantiateValidCustomer(bankAccountNumber: "123");
+        var customer = () => new CustomerTestBuilder().WithBankAccount("123").Build();
 
         customer.ShouldThrow<BankAccountNumberFormatIsNotValid>();
     }

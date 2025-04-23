@@ -9,27 +9,22 @@ namespace Customers.Domain;
 
 public class Customer : BaseEntity
 {
-    private Customer(IPhoneNumberValidator phoneNumberValidator, IEmailDuplicationChecker emailDuplicationChecker,
+    private Customer(ICustomerBaseInfoDuplicationChecker customerBaseInfoDuplicationChecker,
+        IPhoneNumberValidator phoneNumberValidator, IEmailDuplicationChecker emailDuplicationChecker,
         IEmailFormatChecker emailFormatChecker, string firstName, string lastName, DateOnly dateOfBirth,
         string? phoneNumber, string? email, string? bankAccountNumber)
     {
-        SetFullNameAndDateOfBirth(firstName, lastName, dateOfBirth);
+        SetCustomerBaseInfo(customerBaseInfoDuplicationChecker, firstName, lastName, dateOfBirth);
         SetPhoneNumber(phoneNumberValidator, phoneNumber);
         SetEmail(emailDuplicationChecker, emailFormatChecker, email);
         SetBankAccountNumber(bankAccountNumber);
     }
 
-    public string FirstName { get; private set; }
-
-    public string LastName { get; private set; }
-
-    public DateOnly DateOfBirth { get; private set; }
-
+    public CustomerBasicInfo BasicInfo { get; set; }
     public string? PhoneNumber { get; private set; }
-
     public string? Email { get; private set; }
     public BankAccountNumber? BankAccountNumber { get; private set; }
-    
+
     private void SetBankAccountNumber(string? bankAccountNumber)
     {
         BankAccountNumber = new BankAccountNumber(bankAccountNumber);
@@ -51,7 +46,7 @@ public class Customer : BaseEntity
 
     private void SetPhoneNumber(IPhoneNumberValidator phoneNumberValidator, string? phoneNumber)
     {
-        if (phoneNumber == null) return;
+        if (string.IsNullOrWhiteSpace(phoneNumber)) return;
 
         if (!phoneNumberValidator.Validate(phoneNumber))
             throw new PhoneNumberFormatIsInvalidException();
@@ -59,25 +54,27 @@ public class Customer : BaseEntity
         PhoneNumber = phoneNumber;
     }
 
-    private void SetFullNameAndDateOfBirth(string firstName, string lastName, DateOnly dateOfBirth)
+    private void SetCustomerBaseInfo(ICustomerBaseInfoDuplicationChecker customerBaseInfoDuplicationChecker,
+        string firstName, string lastName, DateOnly dateOfBirth)
     {
         if (string.IsNullOrWhiteSpace(firstName) || string.IsNullOrWhiteSpace(lastName))
             throw new FullNameCannotBeEmptyException();
-        
-        if (dateOfBirth == DateOnly.MinValue) throw new DateOfBirthDateIsRequiredException();
 
-        FirstName = firstName;
-        LastName = lastName;
-        DateOfBirth = dateOfBirth;
+        if (dateOfBirth == DateOnly.MinValue) throw new DateOfBirthDateIsRequiredException();
+        
+        if (customerBaseInfoDuplicationChecker.IsDuplicate(firstName, lastName, dateOfBirth))
+            throw new ThisCustomerAlreadyExistException();
+        
+        BasicInfo = new CustomerBasicInfo(firstName, lastName, dateOfBirth);
     }
 
-    public static Customer Create(IPhoneNumberValidator phoneNumberValidator,
-        IEmailDuplicationChecker emailDuplicationChecker, IEmailFormatChecker emailFormatChecker, string firstName,
-        string lastName,
-        DateOnly dateOfBirth, string? phoneNumber, string? email, string? bankAccountNumber)
+    public static Customer Create(ICustomerBaseInfoDuplicationChecker customerBaseInfoDuplicationChecker,
+        IPhoneNumberValidator phoneNumberValidator, IEmailDuplicationChecker emailDuplicationChecker,
+        IEmailFormatChecker emailFormatChecker, string firstName, string lastName, DateOnly dateOfBirth,
+        string? phoneNumber, string? email, string? bankAccountNumber)
     {
-        var customer = new Customer(phoneNumberValidator, emailDuplicationChecker, emailFormatChecker, firstName,
-            lastName, dateOfBirth, phoneNumber, email, bankAccountNumber);
+        var customer = new Customer(customerBaseInfoDuplicationChecker, phoneNumberValidator, emailDuplicationChecker,
+            emailFormatChecker, firstName, lastName, dateOfBirth, phoneNumber, email, bankAccountNumber);
 
         return customer;
     }

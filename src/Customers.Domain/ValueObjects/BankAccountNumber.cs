@@ -16,37 +16,34 @@ public record BankAccountNumber : BaseValueObject<string?>
         if (!value.All(char.IsDigit))
             throw new CannotContainNonDigitException();
 
-        if (!LuhnChecker.IsValid(value))
+        if (!LuhnAlgorithmIsValid(value))
             throw new BankAccountNumberFormatIsNotValid();
 
         return value;
     }
 
-    private static class LuhnChecker
+    public static bool LuhnAlgorithmIsValid(string number)
     {
-        public static bool IsValid(string number)
+        if (string.IsNullOrWhiteSpace(number) || !number.All(char.IsDigit)) return false;
+
+        int sum = 0;
+        bool doubleDigit = false;
+
+        for (int i = number.Length - 1; i >= 0; i--)
         {
-            if (string.IsNullOrWhiteSpace(number) || !number.All(char.IsDigit)) return false;
+            int digit = number[i] - '0';
 
-            int sum = 0;
-            bool doubleDigit = false;
-
-            for (int i = number.Length - 1; i >= 0; i--)
+            if (doubleDigit)
             {
-                int digit = number[i] - '0';
-
-                if (doubleDigit)
-                {
-                    digit *= 2;
-                    if (digit > 9)
-                        digit -= 9;
-                }
-
-                sum += digit;
-                doubleDigit = !doubleDigit;
+                digit *= 2;
+                if (digit > 9)
+                    digit -= 9;
             }
 
-            return sum % 10 == 0;
+            sum += digit;
+            doubleDigit = !doubleDigit;
         }
+
+        return sum % 10 == 0;
     }
 }
