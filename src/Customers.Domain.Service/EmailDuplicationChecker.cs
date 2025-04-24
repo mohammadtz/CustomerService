@@ -1,5 +1,5 @@
-﻿using Customers.Domain.Contracts;
-using Customers.Domain.Services;
+﻿using Customers.Domain.Customers.Contracts;
+using Customers.Domain.Customers.Services;
 
 namespace Customers.Domain.Service;
 

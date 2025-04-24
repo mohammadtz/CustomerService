@@ -1,7 +1,8 @@
 ﻿using Common.Resources;
 using Customers.Domain;
-using Customers.Domain.Exceptions;
-using Customers.Domain.ValueObjects;
+using Customers.Domain.Customers;
+using Customers.Domain.Customers.Exceptions;
+using Customers.Domain.Customers.ValueObjects;
 using Customers.Tests.Unit.Domain.Base;
 using Shouldly;
 

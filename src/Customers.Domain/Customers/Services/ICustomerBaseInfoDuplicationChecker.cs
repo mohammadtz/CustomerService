@@ -1,6 +1,6 @@
 ﻿using Common.DomainBase;
 
-namespace Customers.Domain.Services;
+namespace Customers.Domain.Customers.Services;
 
 public interface ICustomerBaseInfoDuplicationChecker : IDomainService
 {

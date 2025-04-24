@@ -1,8 +1,9 @@
 using Common.CommandQueryBase;
 using Common.InfrastructureBase;
 using Customers.Domain;
-using Customers.Domain.Contracts;
-using Customers.Domain.Services;
+using Customers.Domain.Customers;
+using Customers.Domain.Customers.Contracts;
+using Customers.Domain.Customers.Services;
 
 namespace Customers.Application.Commands.CreateCustomer;
 

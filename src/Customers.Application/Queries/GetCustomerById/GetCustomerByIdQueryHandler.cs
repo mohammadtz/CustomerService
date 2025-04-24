@@ -1,6 +1,6 @@
 using Common.CommandQueryBase;
 using Common.ExceptionBase;
-using Customers.Domain.Contracts;
+using Customers.Domain.Customers.Contracts;
 using Microsoft.EntityFrameworkCore;
 
 namespace Customers.Application.Queries.GetCustomerById;

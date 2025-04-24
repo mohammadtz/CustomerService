@@ -1,5 +1,6 @@
 ﻿using Customers.Domain;
-using Customers.Domain.ValueObjects;
+using Customers.Domain.Customers;
+using Customers.Domain.Customers.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;

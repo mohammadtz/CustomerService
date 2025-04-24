@@ -1,5 +1,6 @@
 ﻿using Customers.Domain;
-using Customers.Domain.Contracts;
+using Customers.Domain.Customers;
+using Customers.Domain.Customers.Contracts;
 using Microsoft.EntityFrameworkCore;
 
 namespace Customers.Infrastructure;

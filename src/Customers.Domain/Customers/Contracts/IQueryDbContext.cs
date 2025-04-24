@@ -1,4 +1,4 @@
-namespace Customers.Domain.Contracts;
+namespace Customers.Domain.Customers.Contracts;
 
 public interface IQueryDbContext
 {

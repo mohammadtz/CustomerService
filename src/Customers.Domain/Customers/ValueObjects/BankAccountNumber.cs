@@ -1,7 +1,7 @@
 ﻿using Common.DomainBase;
-using Customers.Domain.Exceptions;
+using Customers.Domain.Customers.Exceptions;
 
-namespace Customers.Domain.ValueObjects;
+namespace Customers.Domain.Customers.ValueObjects;
 
 public record BankAccountNumber : BaseValueObject<string?>
 {

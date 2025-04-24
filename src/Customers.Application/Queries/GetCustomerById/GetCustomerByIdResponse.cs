@@ -1,4 +1,5 @@
 using Customers.Domain;
+using Customers.Domain.Customers;
 
 namespace Customers.Application.Queries.GetCustomerById;
 

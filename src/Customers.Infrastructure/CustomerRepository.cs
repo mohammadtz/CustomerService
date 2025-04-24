@@ -1,6 +1,7 @@
 ﻿using Common.InfrastructureBase;
 using Customers.Domain;
-using Customers.Domain.Contracts;
+using Customers.Domain.Customers;
+using Customers.Domain.Customers.Contracts;
 
 namespace Customers.Infrastructure;
 

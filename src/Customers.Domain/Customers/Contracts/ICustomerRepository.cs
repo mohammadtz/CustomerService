@@ -1,7 +1,7 @@
 ﻿using System.Linq.Expressions;
 using Common.DomainBase;
 
-namespace Customers.Domain.Contracts;
+namespace Customers.Domain.Customers.Contracts;
 
 public interface ICustomerRepository : IRepositoryBase
 {

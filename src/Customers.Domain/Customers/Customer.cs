@@ -1,13 +1,14 @@
 ﻿using Common.DomainBase;
-using Customers.Domain.Exceptions;
-using Customers.Domain.Services;
-using Customers.Domain.ValueObjects;
+using Customers.Domain.Customers.DomainEvents;
+using Customers.Domain.Customers.Exceptions;
+using Customers.Domain.Customers.Services;
+using Customers.Domain.Customers.ValueObjects;
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
 
-namespace Customers.Domain;
+namespace Customers.Domain.Customers;
 
-public class Customer : BaseEntity
+public class Customer : AggregateRoot
 {
     private Customer(ICustomerBaseInfoDuplicationChecker customerBaseInfoDuplicationChecker,
         IPhoneNumberValidator phoneNumberValidator, IEmailDuplicationChecker emailDuplicationChecker,
@@ -20,7 +21,9 @@ public class Customer : BaseEntity
         SetBankAccountNumber(bankAccountNumber);
     }
 
-    private Customer() { }
+    private Customer()
+    {
+    }
 
     public CustomerBasicInfo BasicInfo { get; set; }
     public string? PhoneNumber { get; private set; }
@@ -63,10 +66,10 @@ public class Customer : BaseEntity
             throw new FullNameCannotBeEmptyException();
 
         if (dateOfBirth == DateOnly.MinValue) throw new DateOfBirthDateIsRequiredException();
-        
+
         if (customerBaseInfoDuplicationChecker.IsDuplicate(firstName, lastName, dateOfBirth))
             throw new ThisCustomerAlreadyExistException();
-        
+
         BasicInfo = new CustomerBasicInfo(firstName, lastName, dateOfBirth);
     }
 
@@ -77,6 +80,8 @@ public class Customer : BaseEntity
     {
         var customer = new Customer(customerBaseInfoDuplicationChecker, phoneNumberValidator, emailDuplicationChecker,
             emailFormatChecker, firstName, lastName, dateOfBirth, phoneNumber, email, bankAccountNumber);
+
+        customer.AddDomainEvent(new CustomerCreatedEvent(customer.Id, firstName, lastName));
 
         return customer;
     }

@@ -1,5 +1,6 @@
 ﻿using Customers.Domain;
-using Customers.Domain.Services;
+using Customers.Domain.Customers;
+using Customers.Domain.Customers.Services;
 using NSubstitute;
 
 namespace Customers.Tests.Unit.Domain.Base;

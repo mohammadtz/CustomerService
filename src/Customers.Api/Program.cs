@@ -14,6 +14,7 @@ builder.Services.AddAppServices();
 builder.Services.AddOpenApi();
 builder.Services.AddSwaggerGen();
 builder.Services.AddProblemDetails();
+builder.Services.AddMassTransitConfig(builder.Configuration);
 
 var app = builder.Build();
 

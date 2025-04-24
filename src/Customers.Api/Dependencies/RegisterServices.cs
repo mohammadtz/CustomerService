@@ -1,6 +1,6 @@
 ﻿using Common.DomainBase;
+using Customers.Domain.Customers.Services;
 using Customers.Domain.Service;
-using Customers.Domain.Services;
 using Microsoft.AspNetCore.Diagnostics;
 
 namespace Customers.Api.Dependencies;

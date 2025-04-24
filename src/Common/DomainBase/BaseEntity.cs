@@ -2,5 +2,5 @@
 
 public abstract class BaseEntity
 {
-    public virtual Guid Id { get; private set; } = Guid.CreateVersion7();
+    public Guid Id { get; private set; } = Guid.CreateVersion7();
 }

@@ -1,8 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using MassTransit;
+using Microsoft.EntityFrameworkCore;
 
 namespace Customers.Infrastructure;
 
-public class CustomerDbContext(DbContextOptions<CustomerDbContext> options) : DbContext(options)
+public class CustomerDbContext(DbContextOptions<CustomerDbContext> options, IPublishEndpoint publishEndpoint)
+    : BaseDbContext(options, publishEndpoint)
 {
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

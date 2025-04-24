@@ -1,4 +1,4 @@
-﻿using Customers.Domain.Services;
+﻿using Customers.Domain.Customers.Services;
 using PhoneNumbers;
 
 namespace Customers.Domain.Service;
