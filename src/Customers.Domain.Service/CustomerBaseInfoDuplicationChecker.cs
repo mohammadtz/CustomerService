@@ -9,7 +9,9 @@ public class CustomerBaseInfoDuplicationChecker(ICustomerRepository customerRepo
 {
     public bool IsDuplicate(string firstName, string lastName, DateOnly dateOfBirth)
     {
-        var basicInfo = new CustomerBasicInfo(firstName, lastName, dateOfBirth);
-        return customerRepository.IsExist(x => x.BasicInfo == basicInfo);
+        return customerRepository.IsExist(x =>
+            x.BasicInfo.FirstName == firstName &&
+            x.BasicInfo.LastName == lastName &&
+            x.BasicInfo.DateOfBirth == dateOfBirth);
     }
 }

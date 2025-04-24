@@ -1,5 +1,4 @@
-﻿using System.Runtime.InteropServices.JavaScript;
-using Common.Resources;
+﻿using Common.Resources;
 using Customers.Domain;
 using Customers.Domain.Exceptions;
 using Customers.Domain.ValueObjects;

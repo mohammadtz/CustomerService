@@ -10,4 +10,9 @@ public abstract class BaseRepository<TEntity>(DbContext dbContext) where TEntity
     {
         return dbContext.Set<TEntity>().Any(expression);
     }
+
+    public void Create(TEntity entity)
+    {
+        dbContext.Set<TEntity>().Add(entity);
+    }
 }

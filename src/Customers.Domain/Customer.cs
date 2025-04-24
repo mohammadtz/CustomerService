@@ -20,6 +20,8 @@ public class Customer : BaseEntity
         SetBankAccountNumber(bankAccountNumber);
     }
 
+    private Customer() { }
+
     public CustomerBasicInfo BasicInfo { get; set; }
     public string? PhoneNumber { get; private set; }
     public string? Email { get; private set; }

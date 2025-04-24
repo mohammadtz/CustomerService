@@ -1,0 +1,8 @@
+services:
+  customers.api:
+    image: ${DOCKER_REGISTRY-}customersapi
+    build:
+      context: .
+      dockerfile: src/Customers.Api/Dockerfile
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest

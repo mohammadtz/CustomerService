@@ -1,0 +1,24 @@
+services:
+  customers.api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
+    ports:
+      - "8080:8080"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: ms-sql
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=CS@#123456#!
+    ports:
+      - "14339:1433"
+    volumes:
+      - sql_data:/var/opt/mssql
+    restart: unless-stopped
+
+volumes:
+  sql_data:
+    name: sql_data
