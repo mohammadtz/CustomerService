@@ -2,7 +2,7 @@
 using Common.DomainBase;
 using Microsoft.EntityFrameworkCore;
 
-namespace Customers.Infrastructure;
+namespace Common.InfrastructureBase;
 
 public abstract class BaseRepository<TEntity>(DbContext dbContext) where TEntity : BaseEntity
 {

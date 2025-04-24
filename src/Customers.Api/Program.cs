@@ -1,8 +1,8 @@
 using Common.CommandQueryBase;
 using Common.DomainBase;
 using Common.InfrastructureBase;
-using Customers.Api.ExceptionHandlers;
 using Customers.Application.Commands.CreateCustomer;
+using Customers.Application.Queries.GetCustomerById;
 using Customers.Domain.Contracts;
 using Customers.Domain.Service;
 using Customers.Domain.Services;
@@ -16,9 +16,17 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<CustomerDbContext>(x =>
     x.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.AddDbContext<CustomerQueryDbContext>(x =>
+    x.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
+        .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));
+
+builder.Services.AddScoped<IQueryDbContext, CustomerQueryDbContext>();
+
+const string corsPolicyName = "AllowAll";
+
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll", policy =>
+    options.AddPolicy(corsPolicyName, policy =>
     {
         policy.AllowAnyOrigin()
             .AllowAnyMethod()
@@ -50,7 +58,7 @@ builder.Services.AddProblemDetails();
 
 var app = builder.Build();
 
-app.UseCors("AllowAll");
+app.UseCors(corsPolicyName);
 
 {
     var serviceScope = app.Services.CreateScope();
@@ -69,7 +77,7 @@ app.UseHttpsRedirection();
 
 app.UseExceptionHandler();
 
-var customerEndPoints = app.MapGroup("/api/customers");
+var customerEndPoints = app.MapGroup("/api/v1/customers");
 
 customerEndPoints.MapPost("/",
     async ([FromServices] IDispatcher dispatcher, [FromBody] CreateCustomerCommand command) =>
@@ -77,5 +85,11 @@ customerEndPoints.MapPost("/",
         await dispatcher.ExecuteCommandAsync(command);
         return TypedResults.Created();
     });
+
+customerEndPoints.MapGet("/{id:guid}", async (IDispatcher dispatcher, Guid id) =>
+{
+    var query = await dispatcher.ExecuteQueryAsync(new GetCustomerByIdQuery(id));
+    return TypedResults.Ok(query);
+});
 
 app.Run();

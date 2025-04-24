@@ -78,6 +78,15 @@ namespace Common.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to داده یافت نشد.
+        /// </summary>
+        public static string DataNotFoundException {
+            get {
+                return ResourceManager.GetString("DataNotFoundException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to تاریخ تولد اجباری می باشد.
         /// </summary>
         public static string DateOfBirthDateIsRequiredException {

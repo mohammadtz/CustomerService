@@ -8,4 +8,9 @@ public class Dispatcher(ISender sender) : IDispatcher
     {
         await sender.Send(command);
     }
+
+    public async Task<TResponse> ExecuteQueryAsync<TResponse>(IQuery<TResponse> query)
+    {
+        return await sender.Send(query);
+    }
 }
