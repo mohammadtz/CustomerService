@@ -1,77 +1,29 @@
 using Common.CommandQueryBase;
-using Common.DomainBase;
-using Common.InfrastructureBase;
+using Customers.Api.Configs;
+using Customers.Api.Dependencies;
 using Customers.Application.Commands.CreateCustomer;
 using Customers.Application.Queries.GetCustomerById;
-using Customers.Domain.Contracts;
-using Customers.Domain.Service;
-using Customers.Domain.Services;
-using Customers.Infrastructure;
-using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<CustomerDbContext>(x =>
-    x.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
-builder.Services.AddDbContext<CustomerQueryDbContext>(x =>
-    x.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
-        .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));
-
-builder.Services.AddScoped<IQueryDbContext, CustomerQueryDbContext>();
-
-const string corsPolicyName = "AllowAll";
-
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy(corsPolicyName, policy =>
-    {
-        policy.AllowAnyOrigin()
-            .AllowAnyMethod()
-            .AllowAnyHeader();
-    });
-});
-
-builder.Services.AddScoped<IDispatcher, Dispatcher>();
-builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-
-builder.Services.Scan(x =>
-    x.FromAssemblies(typeof(CustomerRepository).Assembly, typeof(ICustomerRepository).Assembly)
-        .AddClasses(y => y.AssignableTo<IRepositoryBase>()).AsImplementedInterfaces());
-
-builder.Services.Scan(x =>
-    x.FromAssemblies(typeof(ICustomerBaseInfoDuplicationChecker).Assembly,
-            typeof(CustomerBaseInfoDuplicationChecker).Assembly)
-        .AddClasses(y => y.AssignableTo<IDomainService>()).AsImplementedInterfaces());
-
-builder.Services.Scan(x => x.FromAssemblies(typeof(Program).Assembly)
-    .AddClasses(y => y.AssignableTo<IExceptionHandler>()).AsImplementedInterfaces().WithSingletonLifetime());
-
-builder.Services.AddMediatR(x => x.RegisterServicesFromAssemblies(typeof(CreateCustomerCommand).Assembly));
-
+builder.Services.AddDatabasesConfig(builder.Configuration);
+builder.Services.AddCorsConfig();
+builder.Services.AddCommandQueryRegistrations();
+builder.Services.AddAppServices();
 builder.Services.AddOpenApi();
 builder.Services.AddSwaggerGen();
-
 builder.Services.AddProblemDetails();
 
 var app = builder.Build();
 
-app.UseCors(corsPolicyName);
+app.UseCors(RegisterCorsConfig.CorsPolicy);
 
-{
-    var serviceScope = app.Services.CreateScope();
+app.ApplyMigrations();
 
-    var dbContext = serviceScope.ServiceProvider.GetRequiredService<CustomerDbContext>();
+app.UseSwagger();
 
-    dbContext.Database.Migrate();
-}
-
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 
