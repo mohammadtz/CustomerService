@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Customers.Application.Queries.GetCustomerById;
 
-public class GetCustomerByIdQueryHandler(IQueryDbContext dbContext)
+public class GetCustomerByIdQueryHandler(ICustomerQueryDbContext dbContext)
     : IQueryHandler<GetCustomerByIdQuery, GetCustomerByIdResponse>
 {
     public async Task<GetCustomerByIdResponse> Handle(GetCustomerByIdQuery request, CancellationToken cancellationToken)

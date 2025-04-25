@@ -1,11 +1,10 @@
-﻿using Customers.Domain;
-using Customers.Domain.Customers;
+﻿using Customers.Domain.Customers;
 using Customers.Domain.Customers.Contracts;
 using Microsoft.EntityFrameworkCore;
 
 namespace Customers.Infrastructure;
 
-public class CustomerQueryDbContext(DbContextOptions options) : DbContext(options), IQueryDbContext
+public class CustomerQueryDbContext(DbContextOptions options) : DbContext(options), ICustomerQueryDbContext
 {
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

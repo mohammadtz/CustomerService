@@ -1,4 +1,5 @@
 ﻿using Common.DomainBase;
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
 
 namespace Customers.Domain.Customers.DomainEvents;
 
@@ -11,10 +12,7 @@ public class CustomerCreatedEvent : IDomainEvent
         AggregateId = customerId;
     }
 
-    public CustomerCreatedEvent()
-    {
-        
-    }
+    public CustomerCreatedEvent() { }
 
     public string FirstName { get; set; }
     public string LastName { get; set; }

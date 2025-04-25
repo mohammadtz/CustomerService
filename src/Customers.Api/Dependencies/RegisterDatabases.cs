@@ -17,7 +17,7 @@ public static class RegisterDatabases
             x.UseSqlServer(configuration.GetConnectionString("DefaultConnection"))
                 .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));
         
-        services.AddScoped<IQueryDbContext, CustomerQueryDbContext>();
+        services.AddScoped<ICustomerQueryDbContext, CustomerQueryDbContext>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         
         services.Scan(x =>
